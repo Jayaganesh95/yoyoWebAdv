@@ -90,9 +90,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-
     
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
