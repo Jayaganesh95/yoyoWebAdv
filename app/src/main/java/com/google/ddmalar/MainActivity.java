@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         }
         toolbar.setSubtitle("Stream malayalam series");
 
-
         webView = findViewById(R.id.webView);
         webView.loadUrl("https://www.ddmalar.website");
         webView.getSettings().setJavaScriptEnabled(true);
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
