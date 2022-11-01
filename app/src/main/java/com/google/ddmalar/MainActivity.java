@@ -9,67 +9,38 @@ import android.view.ViewTreeObserver;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class MainActivity extends AppCompatActivity implements ViewTreeObserver.OnScrollChangedListener {
+import com.google.android.material.navigation.NavigationView;
 
-
-
+public class MainActivity extends AppCompatActivity implements ViewTreeObserver.OnScrollChangedListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     WebView webView;
     ProgressBar progressBar;
     Toolbar toolbar;
     SwipeRefreshLayout swipeRefreshLayout;
-    Button searchBtn ;
-    String searchedText="";
-    Button button;
-    TextView text ;
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    ActionBarDrawerToggle actionBarDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        swipeRefreshLayout = findViewById(R.id.swipeRefresh);
-        searchBtn=findViewById(R.id.button);
-
-        searchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!searchedText.isEmpty()){
-                    if (searchedText.endsWith(".com")||searchedText.endsWith(".in")){
-                        webView.loadUrl("https://"+searchedText);
-                    }else {
-                        webView.loadUrl("https://www.google.com/search?q="+searchedText);
-                    }
-                }else {
-                    Toast.makeText(MainActivity.this, "Please enter something", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                String webUrl = webView.getUrl();
-                webView.loadUrl(webUrl);
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
 
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setSubtitle("Stream malayalam series");
-
+        setSupportActionBar(toolbar);
 
         webView = findViewById(R.id.webView);
         webView.loadUrl("https://www.ddmalar.website");
@@ -78,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
         webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         webView.getViewTreeObserver().addOnScrollChangedListener(this);
 
+        swipeRefreshLayout = findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         progressBar = findViewById(R.id.progressBar);
         webView.setWebViewClient(new WebViewClient() {
@@ -93,7 +66,35 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
                 super.onPageFinished(view, url);
             }
         });
+
+        drawerLayout = findViewById(R.id.my_drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
+
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        navigationView = findViewById(R.id.nav_layout);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.nav_account) {
+                    Toast.makeText(MainActivity.this, "accnt", Toast.LENGTH_SHORT).show();
+                }else if (itemId == R.id.nav_settings) {
+                    Toast.makeText(MainActivity.this, "settng", Toast.LENGTH_SHORT).show();
+                }else if (itemId==R.id.nav_logout) {
+                    Toast.makeText(MainActivity.this, "logout", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+
+        });
     }
+
 
     @Override
     public void onBackPressed() {
@@ -130,8 +131,7 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
             @Override
             public boolean onQueryTextChange(String newText) {
              //   Toast.makeText(MainActivity.this, newText, Toast.LENGTH_SHORT).show();
-               // Log.d("TAG", "onQueryTextChange: jhdljshd");
-                searchedText=newText;
+               // Log.d("TAG", "onQueryTextChange: newText");
                 return false;
             }
         });
@@ -146,16 +146,20 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
 
-        if (itemId == R.id.about) {
-            Toast.makeText(this, "about", Toast.LENGTH_SHORT).show();
-        } else if (itemId == R.id.search) {
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
-        }else if (itemId==R.id.help){
-            Toast.makeText(this, "help", Toast.LENGTH_SHORT).show();
-        }else if (itemId==R.id.home){
-            webView.loadUrl("https://www.ddmalar.website");
-        }else{
-            super.onBackPressed();
+        }else {
+            if (itemId == R.id.about) {
+                Toast.makeText(this, "about", Toast.LENGTH_SHORT).show();
+            } else if (itemId == R.id.search) {
+                return true;
+            }else if (itemId==R.id.help){
+                Toast.makeText(this, "help", Toast.LENGTH_SHORT).show();
+            }else if (itemId==R.id.home){
+                webView.loadUrl("https://www.ddmalar.website");
+            } else{
+                super.onBackPressed();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -167,5 +171,15 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
         } else {
             swipeRefreshLayout.setEnabled(false);
         }
+    }
+
+
+
+
+    @Override
+    public void onRefresh() {
+        String webUrl = webView.getUrl();
+        webView.loadUrl(webUrl);
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
