@@ -9,6 +9,7 @@ import android.view.ViewTreeObserver;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -105,11 +106,14 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
         }
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu,menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setQueryHint("Search for a Website");
+
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -121,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
                 }else {
                     webView.loadUrl("https://www.google.com/search?q="+query);
                 }
+
                 return false;
             }
 
@@ -134,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
 
         return true;
     }
+
 
 
 
@@ -156,12 +162,8 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
                 super.onBackPressed();
             }
         }
-
-
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     public void onScrollChanged() {
@@ -173,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
     }
 
 
-    
+
 
     @Override
     public void onRefresh() {
