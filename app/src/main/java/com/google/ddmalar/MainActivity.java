@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
     SwipeRefreshLayout swipeRefreshLayout;
     Button searchBtn ;
     String searchedText="";
+    Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
