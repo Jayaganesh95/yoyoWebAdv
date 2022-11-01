@@ -13,40 +13,34 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class MainActivity extends AppCompatActivity implements ViewTreeObserver.OnScrollChangedListener {
+import com.google.android.material.navigation.NavigationView;
+
+public class MainActivity extends AppCompatActivity implements ViewTreeObserver.OnScrollChangedListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     WebView webView;
     ProgressBar progressBar;
     Toolbar toolbar;
     SwipeRefreshLayout swipeRefreshLayout;
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        swipeRefreshLayout = findViewById(R.id.swipeRefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                String webUrl = webView.getUrl();
-                webView.loadUrl(webUrl);
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
-
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setSubtitle("Stream malayalam series");
-
+        setSupportActionBar(toolbar);
 
         webView = findViewById(R.id.webView);
         webView.loadUrl("https://www.ddmalar.website");
@@ -55,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
         webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         webView.getViewTreeObserver().addOnScrollChangedListener(this);
 
+        swipeRefreshLayout = findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         progressBar = findViewById(R.id.progressBar);
         webView.setWebViewClient(new WebViewClient() {
@@ -70,6 +66,33 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
                 super.onPageFinished(view, url);
             }
         });
+
+        drawerLayout = findViewById(R.id.my_drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
+
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        navigationView = findViewById(R.id.nav_layout);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.nav_account) {
+                    Toast.makeText(MainActivity.this, "accnt", Toast.LENGTH_SHORT).show();
+                }else if (itemId == R.id.nav_settings) {
+                    Toast.makeText(MainActivity.this, "settng", Toast.LENGTH_SHORT).show();
+                }else if (itemId==R.id.nav_logout) {
+                    Toast.makeText(MainActivity.this, "logout", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+
+        });
     }
 
 
@@ -81,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
             super.onBackPressed();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -115,24 +137,31 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
 
 
 
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
 
-        if (itemId == R.id.about) {
-            Toast.makeText(this, "about", Toast.LENGTH_SHORT).show();
-        } else if (itemId == R.id.search) {
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
-        }else if (itemId==R.id.help){
-            Toast.makeText(this, "help", Toast.LENGTH_SHORT).show();
-        }else if (itemId==R.id.home){
-            webView.loadUrl("https://www.ddmalar.website");
-        }else{
-            super.onBackPressed();
+        }else {
+            if (itemId == R.id.about) {
+                Toast.makeText(this, "about", Toast.LENGTH_SHORT).show();
+            } else if (itemId == R.id.search) {
+                return true;
+            }else if (itemId==R.id.help){
+                Toast.makeText(this, "help", Toast.LENGTH_SHORT).show();
+            }else if (itemId==R.id.home){
+                webView.loadUrl("https://www.ddmalar.website");
+            } else{
+                super.onBackPressed();
+            }
         }
+
+
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     public void onScrollChanged() {
@@ -141,5 +170,15 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
         } else {
             swipeRefreshLayout.setEnabled(false);
         }
+    }
+
+
+    
+
+    @Override
+    public void onRefresh() {
+        String webUrl = webView.getUrl();
+        webView.loadUrl(webUrl);
+        swipeRefreshLayout.setRefreshing(false);
     }
 }

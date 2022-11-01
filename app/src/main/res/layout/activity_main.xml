@@ -6,8 +6,10 @@
     android:id="@+id/my_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:openDrawer="start"
     tools:context=".MainActivity"
     tools:ignore="HardcodedText">
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
@@ -18,14 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="search"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
             <WebView
                 android:id="@+id/webView"
                 android:layout_width="0dp"
@@ -34,9 +28,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar" >
-
-            </WebView>
+                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -69,13 +61,17 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_layout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header"
         app:menu="@menu/navigation_menu" />
+
 </androidx.drawerlayout.widget.DrawerLayout>
