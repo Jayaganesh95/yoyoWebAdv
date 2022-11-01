@@ -9,7 +9,6 @@ import android.view.ViewTreeObserver;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -21,37 +20,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class MainActivity extends AppCompatActivity implements ViewTreeObserver.OnScrollChangedListener {
 
-
-
-
     WebView webView;
     ProgressBar progressBar;
     Toolbar toolbar;
     SwipeRefreshLayout swipeRefreshLayout;
-    Button searchBtn ;
-    String searchedText="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
-        searchBtn=findViewById(R.id.button);
-
-        searchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!searchedText.isEmpty()){
-                    if (searchedText.endsWith(".com")||searchedText.endsWith(".in")){
-                        webView.loadUrl("https://"+searchedText);
-                    }else {
-                        webView.loadUrl("https://www.google.com/search?q="+searchedText);
-                    }
-                }else {
-                    Toast.makeText(MainActivity.this, "Please enter something", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -60,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -92,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
         });
     }
 
+
     @Override
     public void onBackPressed() {
         if (webView.canGoBack()) {
@@ -102,13 +83,11 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu,menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setQueryHint("Search for a Website");
-
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -120,15 +99,13 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
                 }else {
                     webView.loadUrl("https://www.google.com/search?q="+query);
                 }
-
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
              //   Toast.makeText(MainActivity.this, newText, Toast.LENGTH_SHORT).show();
-               // Log.d("TAG", "onQueryTextChange: jhdljshd");
-                searchedText=newText;
+               // Log.d("TAG", "onQueryTextChange: newText");
                 return false;
             }
         });
